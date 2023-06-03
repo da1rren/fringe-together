@@ -31,7 +31,7 @@ public class ShowExtensions
             .Where(x => int.TryParse(x, out var _))
             .Select(x => new DateOnly(DateTime.Now.Year, 8, int.Parse(x)));
         
-        availability = new Availability(show.Id, availableDates, 60 * 60);
+        availability = new Availability(show.Id, availableDates);
         await availabilityService.UpsertAvailability(availability);
         return availability;
     }

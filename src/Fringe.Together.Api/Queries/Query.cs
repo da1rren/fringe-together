@@ -63,6 +63,6 @@ public class Query
             .Trim();
         
         var id = CosmosExtensions.CreateKey(uri);
-        return new Show(id, uri, title, location, time, duration, date, description, 60 * 60 * 24);
+        return new Show(id, uri, title, location, time, duration, date, description);
     }
 }
