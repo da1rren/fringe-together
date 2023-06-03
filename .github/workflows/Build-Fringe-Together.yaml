@@ -1,0 +1,31 @@
+name: "Plantwide Build"
+on: [push, workflow_dispatch]
+
+env:
+  DOCKER_BUILDKIT: 1
+  COMPOSE_DOCKER_CLI_BUILD: 1
+  TAG: "${{ github.run_id }}${{ github.run_number }}"
+
+jobs:
+  Dotnet-Build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: src
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${GITHUB_ACTOR}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          file: Fringe.Together.Api/Dockerfile
+          push: true
+          tags: "da1rren/fringe-together:${{env.TAG}}"
+            
