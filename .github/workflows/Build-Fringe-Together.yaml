@@ -25,7 +25,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
-          file: Fringe.Together.Api/Dockerfile
+          file: src/Fringe.Together.Api/Dockerfile
           push: true
           tags: "da1rren/fringe-together:${{env.TAG}}"
             
