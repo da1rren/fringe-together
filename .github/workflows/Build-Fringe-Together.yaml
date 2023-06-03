@@ -27,5 +27,5 @@ jobs:
           file: src/Fringe.Together.Api/Dockerfile
           context: src/
           push: true
-          tags: "ghcr.io/${{ github.repository_owner }}/fringe-together:${{env.TAG}}"
+          tags: "ghcr.io/${{ github.repository_owner }}/fringe-together:latest,ghcr.io/${{ github.repository_owner }}/fringe-together:${{env.TAG}}"
             
