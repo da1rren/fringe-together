@@ -26,12 +26,15 @@ public class ShowExtensions
         using var context = BrowsingContext.New(config);
         using var doc = await context.OpenAsync(req => req.Content(html));
 
-        var availableDates = doc.QuerySelectorAll("span[class=available]")
+        var freeDates = doc.QuerySelectorAll("span[class=tickets-free]");
+        var availableDates = doc.QuerySelectorAll("span[class=available]");
+
+        var ticketsAvailableAt =  freeDates.Concat(availableDates)
             .Select(x => x.Text().Trim())
             .Where(x => int.TryParse(x, out var _))
             .Select(x => new DateOnly(DateTime.Now.Year, 8, int.Parse(x)));
         
-        availability = new Availability(show.Id, availableDates);
+        availability = new Availability(show.Id, ticketsAvailableAt);
         await availabilityService.UpsertAvailability(availability);
         return availability;
     }

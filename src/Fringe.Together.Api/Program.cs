@@ -1,3 +1,4 @@
+using Azure.Storage.Blobs;
 using Fringe.Together.Api;
 using Fringe.Together.Api.Queries;
 using Fringe.Together.Api.Services;
@@ -8,7 +9,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddGraphQLServer()
     .AddQueryType<Query>()
     .AddTypeExtension<ShowExtensions>();
-
 
 builder.Services.AddSingleton<CosmosClient>(_ => new CosmosClient(
     accountEndpoint: builder.Configuration["COSMOS_ENDPOINT"]!,
@@ -23,6 +23,7 @@ builder.Services.AddSingleton<CosmosClient>(_ => new CosmosClient(
 );
 
 builder.Services
+    .AddSingleton(_ => new BlobServiceClient(builder.Configuration["AZURE_STORAGE_CONNECTION_STRING"]))
     .AddScoped<ShowService>()
     .AddScoped<AvailabilityService>()
     .AddHttpClient()

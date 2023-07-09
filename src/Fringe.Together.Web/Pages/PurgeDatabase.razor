@@ -1,0 +1,22 @@
+@inject ShowService ShowService
+@inject AvailabilityService AvailabilityService
+@inject NavigationManager NavManager
+
+@page "/PurgeDatabase"
+@using Fringe.Together.Web.Data
+
+<h1 class="text-danger">Purge Database</h1>
+
+<p>todo add security</p>
+
+<button class="btn btn-danger" @onclick="DeleteEverything">DELETE EVERYTHING</button>
+
+@code {
+
+    public async Task DeleteEverything()
+    {
+        await ShowService.DeleteAll();
+        await AvailabilityService.DeleteAll();
+        NavManager.NavigateTo("/");
+    }
+}

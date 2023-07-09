@@ -1,0 +1,77 @@
+@using Fringe.Together.Web.Data
+@inject InterestedService InterestedService
+@inject NavigationManager NavigationManager
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+
+@if (!ExistingInterest.HasValue)
+{
+    <Button Width="Width.Is50"
+            Color="Color.Success"
+            Outline="true"
+            Loading="true">
+        Loading
+    </Button>
+}
+else if (ExistingInterest.Value)
+{
+    <Button Width="Width.Is50"
+            Color="Color.Warning"
+            Outline="true"
+            Clicked="Uninterested">
+        Uninterested
+    </Button>
+}
+else
+{
+    <Button Width="Width.Is50"
+            Color="Color.Success"
+            Outline="true"
+            Clicked="Interested">
+        Mark as Interested
+    </Button>
+}
+
+@code {
+    [Parameter]
+    public Uri Uri { get; set; }
+
+    public string? ProfileId { get; set; }
+    
+    public bool? ExistingInterest { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        ProfileId = await LocalStorage.GetItemAsStringAsync(ProfileService.ProfileIdKey);
+
+        if (string.IsNullOrWhiteSpace(ProfileId))
+        {
+            ExistingInterest = false;
+            StateHasChanged();
+            return;
+        }
+
+        ExistingInterest = (await InterestedService.GetInterest(Uri, ProfileId)) != null;
+    }
+
+    private async Task EnsureProfile()
+    {
+        ProfileId = await LocalStorage.GetItemAsStringAsync(ProfileService.ProfileIdKey);
+
+        if (string.IsNullOrWhiteSpace(ProfileId))
+        {
+            NavigationManager.NavigateTo("/Profile");
+        }
+    }
+    
+    private async Task Uninterested()
+    {
+        await EnsureProfile();
+        await InterestedService.Uninterested(Uri, ProfileId!);
+    }
+    
+    private async Task Interested()
+    {
+        await EnsureProfile();
+        await InterestedService.Interested(Uri, ProfileId!);
+    }
+}

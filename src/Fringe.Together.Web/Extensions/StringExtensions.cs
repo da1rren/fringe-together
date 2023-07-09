@@ -1,4 +1,4 @@
-namespace Fringe.Together.Api.Extensions;
+namespace Fringe.Together.Web.Extensions;
 
 using AngleSharp.Text;
 using System.Text;

@@ -1,0 +1,36 @@
+@using System.Net
+@using Fringe.Together.Web.Models
+
+@if (Booking == null)
+{
+    <Button Color="Color.Success"
+            Outline="true"
+            Width="Width.Is100"
+            Margin="Margin.Is2.FromTop"
+            Type="ButtonType.Link"
+            To="@("/ManageBooking/" + WebUtility.UrlEncode(EncodedUri))">
+        <span class="oi oi-book" aria-hidden="true"></span>
+        <text>Make Booking </text>
+    </Button>                        }
+else
+{
+    <Button Color="Color.Secondary"
+            Outline="true"
+            Width="Width.Is100"
+            Margin="Margin.Is2.FromTop"
+            Type="ButtonType.Link"
+            To="@("/ManageBooking/" + WebUtility.UrlEncode(EncodedUri))">
+        <span class="oi oi-pencil" aria-hidden="true"></span>
+        <text>Manage Booking (@Booking.ToString()) </text>
+    </Button>
+}
+
+@code {
+    [Parameter]
+    public Uri Uri { get; set; }
+
+    [Parameter]
+    public Booking? Booking { get; set; }
+
+    public string EncodedUri => WebUtility.UrlEncode(Uri.ToString());
+}

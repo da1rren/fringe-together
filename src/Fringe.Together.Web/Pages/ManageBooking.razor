@@ -1,0 +1,87 @@
+@using Fringe.Together.Web.Models
+@using Fringe.Together.Web.Data
+@inject ShowService ShowService
+@inject AvailabilityService AvailabilityService
+@inject NavigationManager NavManager
+
+@page "/ManageBooking/{Uri}"
+
+@if (Show == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <h1>@Show.Title</h1>
+    <Row>
+        <Column>
+            <Image Source="@Show.ImgUri"></Image>
+        </Column>
+        <Column>
+            <p>@Show.Description</p>
+        </Column>
+    </Row>
+                   
+    if (Show.Booking == null)
+    {
+        <h3 class="mt-2">Book</h3>
+
+        <DatePicker TValue="DateTime"
+                    @bind-Date="@PickedDate"
+                    Min="@(new DateTime(2023, 8, 1))"
+                    Max="@(new DateTime(2023, 8, 31))"
+                    Inline />
+        
+        <Button Color="Color.Success" 
+                Loading="@IsLoading"
+                class="mt-3"
+                Clicked="MakeBooking">Mark as Booked</Button>
+    }
+    else
+    {
+        <h3 class="mt-2">Manage Booking</h3>
+
+        <Button Color="Color.Warning" 
+                Loading="@IsLoading"
+                Clicked="CancelBooking">Cancel Booking</Button>
+    }
+}
+
+@code {
+
+    [Parameter]
+    public string Uri { get; set; } = null!;
+
+    public Uri ParsedUri => new(Uri);
+
+    public DateTime PickedDate { get; set; } = new(2023, 08, 01);
+
+    public Show? Show { get; set; }
+    
+    public Availability? Availability { get; set; }
+
+    private bool IsLoading { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        IsLoading = true;
+        Show = await ShowService.GetShow(ParsedUri);
+        Availability = await AvailabilityService.GetAvailability(ParsedUri);
+        IsLoading = false;
+    }
+
+    private async Task MakeBooking()
+    {
+        IsLoading = true;
+        await ShowService.Book(new Uri(Uri), DateOnly.FromDateTime(PickedDate));
+        NavManager.NavigateTo("/");
+    }
+
+    private async Task CancelBooking()
+    {
+        IsLoading = true;
+        await ShowService.CancelBooking(new Uri(Uri));
+        NavManager.NavigateTo("/");
+    }
+
+}

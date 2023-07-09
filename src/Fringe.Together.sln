@@ -5,6 +5,8 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fringe.Together.Api", "Fringe.Together.Api\Fringe.Together.Api.csproj", "{D7FC557C-3CDF-43EA-A0A3-32421CDDA967}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fringe.Together.Web", "Fringe.Together.Web\Fringe.Together.Web.csproj", "{38DAE8A4-1D8C-4623-9173-287DDD33D4DD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{D7FC557C-3CDF-43EA-A0A3-32421CDDA967}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D7FC557C-3CDF-43EA-A0A3-32421CDDA967}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D7FC557C-3CDF-43EA-A0A3-32421CDDA967}.Release|Any CPU.Build.0 = Release|Any CPU
+		{38DAE8A4-1D8C-4623-9173-287DDD33D4DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38DAE8A4-1D8C-4623-9173-287DDD33D4DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38DAE8A4-1D8C-4623-9173-287DDD33D4DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38DAE8A4-1D8C-4623-9173-287DDD33D4DD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

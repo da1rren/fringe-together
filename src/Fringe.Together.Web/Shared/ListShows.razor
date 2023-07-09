@@ -1,0 +1,95 @@
+@using Fringe.Together.Web.Data
+@using Fringe.Together.Web.Models
+@using System.Net
+@inject ShowService ShowService
+@inject AppState AppState
+@implements IDisposable
+
+<div class="row mb-3">
+    <div class="form-group">
+        <input @bind="@Filter"
+               @bind:event="oninput"
+               class="form-control" placeholder="Search..."/>
+    </div>
+</div>
+
+@if (Shows == null)
+{
+    <LoadingIndicator Visible="true" class="mt-3" ></LoadingIndicator>
+}
+else
+{
+    <CardDeck>
+        @foreach (var show in FilteredShows)
+        {
+            <Card>
+                @if (!string.IsNullOrEmpty(show.ImgUri))
+                {
+                    <CardImage Source="@show.ImgUri" Alt=""></CardImage>
+                }
+
+                <CardBody Flex="Flex.Column">
+                    <CardTitle Size="5">@show.Title</CardTitle>
+                    
+                    <CardText>
+                        @show.ShortDescription
+                    </CardText>
+
+                    <Buttons Width="Width.Is100" Flex="Flex.AlignSelf.End" Margin="Margin.IsAuto.FromTop">
+                        <Button Width="Width.Is50" Color="Color.Secondary" Outline="true" Type="ButtonType.Link" To="@show.Uri.ToString()">Read More</Button>
+                        <ManageInterest Uri="@show.Uri"></ManageInterest>
+                    </Buttons>
+                </CardBody>
+                <CardFooter>
+                    <ManageBooking Uri="@show.Uri" Booking="@show.Booking"></ManageBooking>
+                    <ShowAvailability Uri="@show.Uri"></ShowAvailability>
+                </CardFooter>
+            </Card>
+        }
+    </CardDeck>
+}
+
+@code {
+    private IEnumerable<Show>? Shows { get; set; }
+
+    private IEnumerable<Show> FilteredShows
+    {
+        get
+        {
+            if (Shows == null)
+            {
+                return Enumerable.Empty<Show>();
+            }
+            
+            if (string.IsNullOrEmpty(Filter))
+            {
+                return Shows;
+            }
+            
+            return Shows.Where(x => x.Title?.Contains(Filter, StringComparison.OrdinalIgnoreCase) ?? false);
+        }
+    }
+
+    private string? Filter { get; set; }
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            Shows = await ShowService.ListShows();
+            AppState.OnChange += OnAppStateOnChange;
+            StateHasChanged();
+        }
+    }
+    
+    private async Task OnAppStateOnChange(object s, AppStateEventArgs e)
+    {
+        Shows = await ShowService.ListShows();
+        StateHasChanged();
+    }
+    
+    public void Dispose()
+    {
+        AppState.OnChange -= OnAppStateOnChange;
+    }
+}

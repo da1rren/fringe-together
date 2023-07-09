@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <PackageReference Include="AngleSharp" Version="1.0.2-alpha-281" />
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.16.0" />
     <PackageReference Include="HotChocolate.AspNetCore" Version="13.2.0" />
     <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.34.0" />
   </ItemGroup>

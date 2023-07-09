@@ -1,0 +1,42 @@
+@using Fringe.Together.Web.Data
+@inject ProfileService ProfileService
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@page "/Profile"
+
+<h1>Profile</h1>
+
+<Validations @ref="validations" Mode="ValidationMode.Manual">
+    <Validation>
+        <Field Horizontal>
+            <FieldLabel ColumnSize="ColumnSize.Is2">Name</FieldLabel>
+            <FieldBody ColumnSize="ColumnSize.Is10">
+                <TextEdit Placeholder="Firstname" @bind-Text="@Name">
+                    <Feedback>
+                        <ValidationError />
+                    </Feedback>
+                </TextEdit>
+            </FieldBody>
+        </Field>
+    </Validation>
+    
+    <Button Color="Color.Primary" Clicked="@Submit">Submit</Button>
+</Validations>
+
+@code {
+    private string? Name { get; set; }
+    
+    Validations validations;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+    }
+    
+    async Task Submit()
+    {
+        if (await validations.ValidateAll())
+        {
+            var profile = await ProfileService.CreateProfile(Name!);
+            await LocalStorage.SetItemAsStringAsync(ProfileService.ProfileIdKey, profile.Id);
+        }
+    }
+}

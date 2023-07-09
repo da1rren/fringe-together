@@ -1,0 +1,35 @@
+@using Fringe.Together.Web.Data
+@using Fringe.Together.Web.Models
+@inject AvailabilityService AvailabilityService
+
+@if (Availability == null)
+{
+    <div class="d-flex justify-content-center mt-2 text-secondary">
+        <div class="spinner-border" role="status"></div>
+    </div>
+}
+else if (Availability?.AvailableDates.Count() < 5)
+{
+    <p class="text-warning text-center">@Availability?.ToString(3)</p>
+}
+else if(Availability?.AvailableDates?.Any() ?? false)
+{
+    <p class="text-muted text-center">@Availability?.ToString(3)</p>
+}
+else
+{
+    <p class="text-danger text-center">Not Available</p>
+}
+
+@code {
+    [Parameter]
+    public Uri Uri { get; set; }
+
+    public Availability? Availability { get; set; }
+    
+    protected override async Task OnInitializedAsync()
+    {
+        Availability = await AvailabilityService.GetAvailability(Uri);
+    }
+
+}

@@ -1,0 +1,62 @@
+@using Fringe.Together.Web.Data
+@using Fringe.Together.Web.Extensions
+@using Fringe.Together.Web.Models
+@using AngleSharp
+@using AngleSharp.Dom
+@inject ShowService ShowService
+@inject AppState AppState
+@inject NavigationManager NavManager
+
+@if (!isLoading)
+{
+    <EditForm Model="_viewModel" OnSubmit="@Submit">
+        <InputTextArea @bind-Value="_viewModel.Uris"
+                       class="form-control"
+                       multiple="multiple">
+        </InputTextArea>
+
+        <button class="btn btn-success" type="submit">Submit</button>
+    </EditForm>
+}
+else
+{
+    <div class="d-flex justify-content-center">
+        <div class="spinner-border text-success" role="status"></div>
+    </div>
+}
+
+@code {
+
+    public class AddShowViewModel
+    {
+        public string? Uris { get; set; }
+
+        public Uri[] ParseUris()
+        {
+            if (string.IsNullOrEmpty(Uris))
+            {
+                return Array.Empty<Uri>();
+            }
+
+            return Uris.Split(null)
+                .Select(x => new Uri(x))
+                .Where(x => x.Host.Equals("tickets.edfringe.com", StringComparison.OrdinalIgnoreCase))
+                .ToArray();
+        }
+    }
+
+    private AddShowViewModel _viewModel = new();
+    
+    private bool isLoading = false;
+    public async Task Submit()
+    {
+        isLoading = true;
+        var parsedUris = _viewModel.ParseUris();
+        var tasks = parsedUris.Select(uri => ShowService.UpsertShow(uri));
+        await Task.WhenAll(tasks);
+        await AppState.NotifyStateChanged();
+        _viewModel.Uris = string.Empty;
+        NavManager.NavigateTo("/");
+    }
+    
+}
